@@ -1,25 +1,18 @@
 # jobs-test-fetch.yaml
 jobs:
   - script: >
-      pipelineJob('Test-Git-Fetch') {
+      pipelineJob('job-dsl-plugin') {
         definition {
           cpsScm {
             scm {
               git {
                 remote {
-                  url('https://github.com/padstrike/Jenkins-config.git')
-                  // ไม่ต้องใส่ credentials ถ้า repo public
+                  url('https://github.com/jenkinsci/job-dsl-plugin.git')
                 }
-                branches('*/main')
+                branch('*/master')
               }
             }
-            // แทน scriptPath ใช้ scriptText ให้มันรัน echo ง่ายๆ
-            scriptText('''
-              node {
-                checkout scm
-                echo "✅ Fetch success!"
-              }
-            ''')
+            lightweight()
           }
         }
       }
