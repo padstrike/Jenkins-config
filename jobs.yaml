@@ -1,7 +1,7 @@
 jobs:
     - script: |
           // === 1. Create root folders ===
-          ['PAD', 'PAD + '/' + DevOps'].each { base ->
+          ['PAD', 'PAD/DevOps'].each { base ->
               folder(base) {
                   description('Folder: ' + base)
               }
