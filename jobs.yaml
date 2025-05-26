@@ -1,6 +1,6 @@
 jobs:
   - script: |
-      // Root folders
+      // Root folder
       folder('PAD') {
           description('Root folder for PAD projects')
       }
@@ -20,7 +20,7 @@ jobs:
         }
 
         environments.each { env ->
-          def jobName = "${projectName}-${env}"
+          def jobName = "PAD/${projectName}/${projectName}-${env}"
 
           pipelineJob(jobName) {
             description("Pipeline for ${projectName} [${env}]")
