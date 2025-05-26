@@ -1,15 +1,15 @@
 # jobs.yaml
 jobs:
   - script: >
-      pipelineJob('Seed-All-Env-Pipelines') {
+      pipelineJob('All-Env-Pipelines') {
         definition {
           cpsScm {
             scm {
               git {
-                // ใช้ remote(name, url, credentialsId)
-                remote('origin',
-                       'https://github.com/padstrike/Jenkins-config.git',
-                       '')
+                remote {
+                  url('https://github.com/padstrike/Jenkins-config.git')
+                  credentials('gitlab-token')
+                }
                 branches('*/main')
               }
             }
