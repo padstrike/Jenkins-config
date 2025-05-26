@@ -6,13 +6,13 @@ jobs:
       }
 
       def jobDefinitions = [
-        'project-a': [repoUrl: 'https://github.com/padstrike/example-pipeline.git'],
-        'project-b': [repoUrl: 'https://github.com/padstrike/example-pipeline.git']
+        'project-a',
+        'project-b'
       ]
 
       def environments = ['dev', 'sit', 'uat']
 
-      jobDefinitions.each { projectName, cfg ->
+      jobDefinitions.each { projectName ->
 
         // Create folder for each project under PAD
         folder("PAD/${projectName}") {
@@ -20,7 +20,7 @@ jobs:
         }
 
         environments.each { env ->
-          def jobName = "PAD/${projectName}/${projectName}-${env}"
+          def jobName = "${projectName}-${env}"
 
           pipelineJob(jobName) {
             description("Pipeline for ${projectName} [${env}]")
@@ -31,7 +31,7 @@ jobs:
                 scm {
                   git {
                     remote {
-                      url(cfg.repoUrl)
+                      url('https://github.com/padstrike/example-pipeline.git')
                       credentials('gitlab')
                     }
                     branch('main')
