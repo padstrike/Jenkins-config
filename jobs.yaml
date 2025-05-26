@@ -1,38 +1,37 @@
 jobs:
-  - script: |
-      import java.io.File
+    - script: |
+        // 1. Define projects explicitly
+        def jobDefinitions = [
+          'project-a': [repoUrl: 'https://github.com/padstrike/example-pipeline.git'],
+          'project-b': [repoUrl: 'https://github.com/padstrike/example-pipeline.git']
+        ]
 
-      def environments = ['dev', 'sit', 'uat']
+        // 2. Define environments
+        def environments = ['dev', 'sit', 'uat']
 
-      def workspaceDir = new File('.')
-      def projects = workspaceDir.listFiles()
-          .findAll { it.isDirectory() && it.name.startsWith('project-') }
-
-      projects.each { proj ->
-          def projectName = proj.name
+        // 3. Loop through projects and environments
+        jobDefinitions.each { projectName, cfg ->
           environments.each { env ->
-              def jobName = 'projectName + '-' + env
-              pipelineJob(jobName) {
-                  description('Pipeline for ' + projectName + ' [' + env + ']')
-                  keepDependencies(false)
-                  // 4. ดึง Jenkinsfile แต่ละ env ด้วย scriptPath concatenation
-                  definition {
-                      cpsScm {
-                          scm {
-                              git {
-                                  remote {
-                                      url 'https://github.com/padstrike/example-pipeline.git'
-                                      credentials('gitlab')
-                                  }
-                                  branch 'main'
-                              }
-                          }
-                          scriptPath(projectName + '/' + env + '.Jenkinsfile')
-                          lightweight true
-                      }
-                  }
+            def jobName = 'PAD/DevOps/' + projectName + '-' + env
+            pipelineJob(jobName) {
+              description('Pipeline for ' + projectName + ' [' + env + ']')
+              keepDependencies(false)
 
-                  disabled(false)
+              // 4. Pipeline definition pointing to per-env Jenkinsfile
+              definition {
+                cpsScm {
+                  scm {
+                    git {
+                      remote { url cfg.repoUrl; credentials('gitlab') }
+                      branch 'main'
+                    }
+                  }
+                  scriptPath(projectName + '/' + env + '.Jenkinsfile')
+                  lightweight(true)
+                }
               }
+
+              disabled(false)
+            }
           }
-      }
+        }
