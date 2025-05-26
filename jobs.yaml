@@ -1,4 +1,3 @@
-
 jobs:
   - script: |
       import java.io.File
@@ -12,10 +11,11 @@ jobs:
       projects.each { proj ->
           def projectName = proj.name
           environments.each { env ->
-              def jobName = "PAD/DevOps/${projectName}-${env}"
+              def jobName = 'PAD/DevOps/' + projectName + '-' + env
               pipelineJob(jobName) {
-                  description("Pipeline for ${projectName} [${env}]")
+                  description('Pipeline for ' + projectName + ' [' + env + ']')
                   keepDependencies(false)
+                  // 4. ดึง Jenkinsfile แต่ละ env ด้วย scriptPath concatenation
                   definition {
                       cpsScm {
                           scm {
@@ -27,12 +27,12 @@ jobs:
                                   branch 'main'
                               }
                           }
-                          scriptPath "${projectName}/${env}.Jenkinsfile"
+                          scriptPath(projectName + '/' + env + '.Jenkinsfile')
                           lightweight true
                       }
                   }
 
-                  disabled false
+                  disabled(false)
               }
           }
       }
