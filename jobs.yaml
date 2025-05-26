@@ -5,44 +5,41 @@ jobs:
           description('Root folder for PAD projects')
       }
 
-      def jobDefinitions = [
-        'project-a',
-        'project-b'
-      ]
-
+      def jobDefinitions = ['project-a', 'project-b']
       def environments = ['dev', 'sit', 'uat']
 
       jobDefinitions.each { projectName ->
 
-        // Create folder for each project under PAD
-        folder("PAD/${projectName}") {
-          description("Folder for ${projectName}")
-        }
-
-        environments.each { env ->
-          def jobName = "PAD/${projectName}/${projectName}-${env}"
-
-          pipelineJob(jobName) {
-            description("Pipeline for ${projectName} [${env}]")
-            keepDependencies(false)
-
-            definition {
-              cpsScm {
-                scm {
-                  git {
-                    remote {
-                      url('https://github.com/padstrike/example-pipeline.git')
-                      credentials('gitlab')
-                    }
-                    branch('main')
-                  }
-                }
-                scriptPath("${projectName}/${env}.Jenkinsfile")
-                lightweight(true)
-              }
-            }
-
-            disabled(false)
+          folder("PAD/${projectName}") {
+              description("Folder for ${projectName}")
           }
-        }
+
+          environments.each { env ->
+              def jobName = "PAD/${projectName}/${projectName}-${env}"
+              def scriptPathValue = "${projectName}/${env}.Jenkinsfile"
+
+              pipelineJob(jobName) {
+                  description("Pipeline for ${projectName} [${env}]")
+                  keepDependencies(false)
+
+                  definition {
+                      cpsScm {
+                          scm {
+                              git {
+                                  remote {
+                                      url('https://github.com/padstrike/example-pipeline.git')
+                                      credentials('gitlab')
+                                  }
+                                  branch('main')
+                              }
+                          }
+                          scriptPath(scriptPathValue)
+                          lightweight(true)
+                      }
+                  }
+
+                  disabled(false)
+              }
+          }
       }
+
