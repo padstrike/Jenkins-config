@@ -12,7 +12,7 @@ jobs:
                 branch('*/main')
               }
             }
-            scriptPath 'POC_pipeline.groovy'
+            scriptPath 'jobs-dsl/POC_pipeline.groovy'
             lightweight false
           }
         }
