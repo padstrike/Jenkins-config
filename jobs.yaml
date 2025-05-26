@@ -10,12 +10,11 @@ jobs:
 
       jobDefinitions.each { projectName ->
 
-          folder("PAD/${projectName}") {
+          folder("PAD/ + projectName") {
               description("Folder for ${projectName}")
           }
-
           environments.each { env ->
-              def jobName = "PAD/${projectName}/${projectName}-${env}"
+              def jobName = 'PAD/' + projectName/ + projectName +'-' + env
               def scriptPathValue = "${projectName}/${env}.Jenkinsfile"
 
               pipelineJob(jobName) {
