@@ -1,0 +1,17 @@
+# jobs.yaml
+jobs:
+  - script: >
+      pipelineJob('Seed-All-Env-Pipelines') {
+        definition {
+          cpsScm {
+            scm {
+              git {
+                remote { url('https://github.com/padstrike/Jenkins-config.git') }
+                credentialsId('gitlab-token')
+                branch('main')
+              }
+            }
+            scriptPath('jobs-dsl/POC_pipeline.groovy')
+          }
+        }
+      }
