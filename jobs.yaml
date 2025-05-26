@@ -7,7 +7,7 @@ jobs:
             scm {
               git {
                 remote { url('https://github.com/padstrike/Jenkins-config.git') }
-                credentialsId('gitlab-token')
+                credentials('gitlab-token')
                 branch('main')
               }
             }
