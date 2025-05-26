@@ -14,19 +14,19 @@ jobs:
 
           // === 3. For each project, create a subfolder under PAD/DevOps, then jobs ===
           projects.each { projectName ->
-              def projectFolder = 'PAD + '/' + DevOps'+ '/'  + projectName
+              def projectFolder = "PAD/DevOps/${projectName}"
 
               folder(projectFolder) {
                   description('Project folder for ' + projectName + ' under DevOps')
               }
 
               environments.each { env ->
-                  def jobName         = projectFolder + '/' + projectName + '-' + env
-                  def jenkinsfilePath = projectName + '/' + env + '.Jenkinsfile'
+                  def jobName         = "${projectFolder}/${projectName}-${env}"
+                  def jenkinsfilePath = "${projectName}/${env}.Jenkinsfile"
 
                   try {
                       pipelineJob(jobName) {
-                          description('Pipeline for ' + projectName + ' [' + env + '] under DevOps')
+                          description("Pipeline for ${projectName} [${env}] under DevOps")
                           keepDependencies(false)
 
                           definition {
@@ -48,7 +48,7 @@ jobs:
                           disabled(false)
                       }
                   } catch (Exception e) {
-                      println '❌ Failed to create job "' + jobName + '": ' + e.toString()
+                      println "❌ Failed to create job \"${jobName}\": ${e}"
                   }
               }
           }
