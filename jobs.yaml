@@ -1,19 +1,35 @@
-# jobs.yaml
+
 jobs:
-  - script: >
-      pipelineJob('Seed-All-Env-Pipelines') {
-        definition {
-          cpsScm {
-            scm {
-              git {
-                remote {
-                  url('https://github.com/padstrike/Jenkins-config.git')
-                  credentials('gitlab-token')
+  - script: |
+      def environments = ['dev', 'sit', 'uat']
+      def projects = findFiles(glob: 'project-*').findAll { it.directory }
+
+      projects.each { proj ->
+        def projectName = proj.name
+
+        environments.each { env ->
+          def jobName = "PAD/DevOps/${projectName}-${env}"
+
+          pipelineJob(jobName) {
+            description("Pipeline for ${projectName} [${env}]")
+            keepDependencies(false)
+            definition {
+              cpsScm {
+                scm {
+                  git {
+                    remote {
+                      url 'https://github.com/padstrike/example-pipeline.git'
+                      credentials('gitlab')
+                    }
+                    branch 'main'
+                  }
                 }
-                branches('*/main')
+                scriptPath proj.path + "/${env}.Jenkinsfile"
+                lightweight true
               }
             }
-            scriptPath('jobs-dsl/POC_pipeline.groovy')
+
+            disabled false
           }
         }
       }
