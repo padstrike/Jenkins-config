@@ -1,33 +1,40 @@
 jobs:
   - script: |
-      import java.io.File
+      // Root folder
+      folder('PAD') {
+          description('Root folder for PAD projects')
+      }
 
+      def jobDefinitions = ['project-a', 'project-b']
       def environments = ['dev', 'sit', 'uat']
 
-      def workspaceDir = new File('.')
-      def projects = workspaceDir.listFiles()
-          .findAll { it.isDirectory() && it.name.startsWith('project-') }
+      jobDefinitions.each { projectName ->
 
-      projects.each { proj ->
-          def projectName = proj.name
+          folder("PAD/${projectName}") {
+              description("Folder for ${projectName}")
+          }
+
           environments.each { env ->
-              def jobName = 'projectName + '-' + env
+              def jobName = "PAD/${projectName}/${projectName}-${env}"
+              def scriptPathValue = "${projectName}/${env}.Jenkinsfile"
+
               pipelineJob(jobName) {
-                  description('Pipeline for ' + projectName + ' [' + env + ']')
+                  description("Pipeline for ${projectName} [${env}]")
                   keepDependencies(false)
+
                   definition {
                       cpsScm {
                           scm {
                               git {
                                   remote {
-                                      url 'https://github.com/padstrike/example-pipeline.git'
+                                      url('https://github.com/padstrike/example-pipeline.git')
                                       credentials('gitlab')
                                   }
-                                  branch 'main'
+                                  branch('main')
                               }
                           }
-                          scriptPath(projectName + '/' + env + '.Jenkinsfile')
-                          lightweight true
+                          scriptPath(scriptPathValue)
+                          lightweight(true)
                       }
                   }
 
