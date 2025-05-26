@@ -1,57 +1,56 @@
 jobs:
     - script: |
-        // === 1. Create the main DevOps folder ===
-        folder('PAD') {
-            description('Main PAD folder')
-        }
+          // === 1. Create root folders ===
+          ['PAD', 'PAD/DevOps'].each { base ->
+              folder(base) {
+                  description('Folder: ' + base)
+              }
+          }
 
-        folder('PAD/DevOps') {
-            description('DevOps folder inside PAD')
-        }
+          // === 2. Constants ===
+          def repoUrl      = 'https://github.com/padstrike/example-pipeline.git'
+          def projects     = ['project-a', 'project-b']
+          def environments = ['dev', 'sit', 'uat']
 
-        // === 2. Configuration constants ===
-        def repoUrl = 'https://github.com/padstrike/example-pipeline.git'
-        def projects = ['project-a', 'project-b']
-        def environments = ['dev', 'sit', 'uat']
+          // === 3. For each project, create a subfolder under PAD/DevOps, then jobs ===
+          projects.each { projectName ->
+              def projectFolder = 'PAD/DevOps/' + projectName
 
-        // === 3. Generate folders and jobs under PAD/DevOps ===
-        projects.each { projectName ->
-            def projectFolder = "PAD/DevOps/${projectName}"
+              folder(projectFolder) {
+                  description('Project folder for ' + projectName + ' under DevOps')
+              }
 
-            folder(projectFolder) {
-                description("Project folder for ${projectName} under DevOps")
-            }
+              environments.each { env ->
+                  def jobName         = projectFolder + '/' + projectName + '-' + env
+                  def jenkinsfilePath = projectName + '/' + env + '.Jenkinsfile'
 
-            environments.each { env ->
-                def jobName = "${projectFolder}/${projectName}-${env}"
-                def jenkinsfilePath = "${projectName}/${env}.Jenkinsfile"
+                  try {
+                      pipelineJob(jobName) {
+                          description('Pipeline for ' + projectName + ' [' + env + '] under DevOps')
+                          keepDependencies(false)
 
-                try {
-                    pipelineJob(jobName) {
-                        description("Pipeline for ${projectName} [${env}] under DevOps")
-                        keepDependencies(false)
+                          definition {
+                              cpsScm {
+                                  scm {
+                                      git {
+                                          remote {
+                                              url(repoUrl)
+                                              credentials('gitlab')
+                                          }
+                                          branch('main')
+                                      }
+                                  }
+                                  scriptPath(jenkinsfilePath)
+                                  lightweight(true)
+                              }
+                          }
 
-                        definition {
-                            cpsScm {
-                                scm {
-                                    git {
-                                        remote {
-                                            url(repoUrl)
-                                            credentials('gitlab')
-                                        }
-                                        branch('main')
-                                    }
-                                }
-                                scriptPath(jenkinsfilePath)
-                                lightweight(true)
-                            }
-                        }
+                          disabled(false)
+                      }
+                  } catch (Exception e) {
+                      println '❌ Failed to create job "' + jobName + '": ' + e.toString()
+                  }
+              }
+          }
 
-                        disabled(false)
-                    }
-                } catch (Exception e) {
-                    println '❌ Failed to create job: ' + e.toString()
-                }
-            }
-        }
 
