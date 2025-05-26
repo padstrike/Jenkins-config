@@ -1,42 +1,58 @@
 jobs:
-  - script: |
-      // Root folder
-      folder('PAD') {
-          description('Root folder for PAD projects')
-      }
+    - script: |
+    
+        // Root folders
+        ['PAD', 'PAD/DevOps'].each { path ->
+            folder(path) {
+                description("Folder: ${path}")
+            }
+        }
 
-      def jobDefinitions = ['project-a', 'project-b']
-      def environments = ['dev', 'sit', 'uat']
+        // Constant repo URL for all jobs
+        def repoUrl = 'https://github.com/padstrike/example-pipeline.git'
 
-      jobDefinitions.each { projectName ->
+        // List of projects only
+        def projects = ['project-a', 'project-b']
+        def environments = ['dev', 'sit', 'uat']
 
-          folder("PAD + '/' + projectName") {
-              description("Folder for ${projectName}")
-          }
-          environments.each { env ->
-              def jobName = ""PAD + '/' + projectName + '/' + projectName +'-' + env"
-              def scriptPathValue = "projectName + '/' + env + '.Jenkinsfile"
+        // Generate folders and jobs
+        projects.each { projectName ->
+            def basePath = "PAD/${projectName}"
 
-              pipelineJob(jobName) {
-                description('Pipeline for ' + projectName + ' [' + env + ']')
-                keepDependencies(false)
+            folder(basePath) {
+                description("Project folder for ${projectName}")
+            }
 
-                // 4. Pipeline definition pointing to per-env Jenkinsfile
-                definition {
-                  cpsScm {
-                    scm {
-                      git {
-                        remote { url cfg.repoUrl; credentials('gitlab') }
-                        branch 'main'
-                      }
+            environments.each { env ->
+                def jobName = "${basePath}/${projectName}-${env}"
+                def scriptPath = "${projectName}/${env}.Jenkinsfile"
+
+                try {
+                    pipelineJob(jobName) {
+                        description("Pipeline for ${projectName} [${env}]")
+
+                        keepDependencies(false)
+
+                        definition {
+                            cpsScm {
+                                scm {
+                                    git {
+                                        remote {
+                                            url(repoUrl)
+                                            credentials('gitlab')
+                                        }
+                                        branch('main')
+                                    }
+                                }
+                                scriptPath(scriptPath)
+                                lightweight(true)
+                            }
+                        }
+
+                        disabled(false)
                     }
-                    scriptPath(projectName + '/' + env + '.Jenkinsfile')
-                    lightweight(true)
-                  }
+                } catch (Exception e) {
+                    println "❌ Failed to create job '${jobName}': ${e.message}"
                 }
-
-                disabled(false)
-              }
-          }
-      }
-
+            }
+        }
