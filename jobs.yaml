@@ -1,7 +1,7 @@
 # jobs.yaml
 jobs:
   - script: >
-      pipelineJob('All-Env-Pipelines') {
+      pipelineJob('Seed-All-Env-Pipelines') {
         definition {
           cpsScm {
             scm {
