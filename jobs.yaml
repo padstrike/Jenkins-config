@@ -6,9 +6,11 @@ jobs:
           cpsScm {
             scm {
               git {
-                remote { url('https://github.com/padstrike/Jenkins-config.git') }
-                credentials('gitlab-token')
-                branch('main')
+                // ใช้ remote(name, url, credentialsId)
+                remote('origin',
+                       'https://github.com/padstrike/Jenkins-config.git',
+                       '')
+                branches('*/main')
               }
             }
             scriptPath('jobs-dsl/POC_pipeline.groovy')
