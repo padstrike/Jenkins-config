@@ -11,7 +11,7 @@ jobs:
       projects.each { proj ->
           def projectName = proj.name
           environments.each { env ->
-              def jobName = 'PAD/DevOps/' + projectName + '-' + env
+              def jobName = 'projectName + '-' + env
               pipelineJob(jobName) {
                   description('Pipeline for ' + projectName + ' [' + env + ']')
                   keepDependencies(false)
