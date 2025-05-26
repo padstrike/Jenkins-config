@@ -1,24 +1,25 @@
 jobs:
     - script: |
-    
-        // === 1. สร้างโฟลเดอร์หลัก ===
-        ['PAD', 'PAD/DevOps'].each { folderName ->
-            folder(folderName) {
-                description("Folder: ${folderName}")
-            }
+        // === 1. Create the main DevOps folder ===
+        folder('PAD') {
+            description('Main PAD folder')
         }
 
-        // === 2. config constants ===
+        folder('PAD/DevOps') {
+            description('DevOps folder inside PAD')
+        }
+
+        // === 2. Configuration constants ===
         def repoUrl = 'https://github.com/padstrike/example-pipeline.git'
         def projects = ['project-a', 'project-b']
         def environments = ['dev', 'sit', 'uat']
 
-        // === 3. Generate jobs ===
+        // === 3. Generate folders and jobs under PAD/DevOps ===
         projects.each { projectName ->
-            def projectFolder = "PAD/${projectName}"
+            def projectFolder = "PAD/DevOps/${projectName}"
 
             folder(projectFolder) {
-                description("Project folder for ${projectName}")
+                description("Project folder for ${projectName} under DevOps")
             }
 
             environments.each { env ->
@@ -27,7 +28,7 @@ jobs:
 
                 try {
                     pipelineJob(jobName) {
-                        description("Pipeline for ${projectName} [${env}]")
+                        description("Pipeline for ${projectName} [${env}] under DevOps")
                         keepDependencies(false)
 
                         definition {
@@ -49,7 +50,6 @@ jobs:
                         disabled(false)
                     }
                 } catch (Exception e) {
-                    // หลีกเลี่ยง string interpolation เพื่อลด error JCasC
                     println '❌ Failed to create job: ' + e.toString()
                 }
             }
