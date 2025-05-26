@@ -1,57 +1,146 @@
 jobs:
     - script: |
-          // === 1. Create root folders (no trailing “/”, no GStrings) ===
-          ['PAD', 'PAD/DevOps'].each { base ->
-              folder(base) {
-                  description('Folder: ' + base)
+            def jobsMap = [
+            'backend/cimbt-ctip-bioapi/pipeline-build-dev': 'backend/cimbt-ctip-bioapi/pipeline-build-dev.Jenkinsfile',
+            'backend/cimbt-ctip-bioapi/pipeline-deploy-dev': 'backend/cimbt-ctip-bioapi/pipeline-deploy-dev.Jenkinsfile',
+            'backend/cimbt-ctip-bioapi/pipeline-deploy-sit': 'backend/cimbt-ctip-bioapi/pipeline-deploy-sit.Jenkinsfile',
+            'backend/cimbt-ctip-bioapi/pipeline-deploy-uat': 'backend/cimbt-ctip-bioapi/pipeline-deploy-uat.Jenkinsfile',
+            'backend/cimbt-ctip-bioapi/pipeline-rollback-uat': 'backend/cimbt-ctip-bioapi/pipeline-rollback-uat.Jenkinsfile',
+            'backend/cimbt-ctip-bioapi/pipeline-security-scan': 'backend/cimbt-ctip-bioapi/pipeline-security-scan.Jenkinsfile',
+            'backend/cimbt-ctip-ctipapi/pipeline-build-dev': 'backend/cimbt-ctip-ctipapi/pipeline-build-dev.Jenkinsfile',
+            'backend/cimbt-ctip-ctipapi/pipeline-deploy-dev': 'backend/cimbt-ctip-ctipapi/pipeline-deploy-dev.Jenkinsfile',
+            'backend/cimbt-ctip-ctipapi/pipeline-deploy-sit': 'backend/cimbt-ctip-ctipapi/pipeline-deploy-sit.Jenkinsfile',
+            'backend/cimbt-ctip-ctipapi/pipeline-deploy-uat': 'backend/cimbt-ctip-ctipapi/pipeline-deploy-uat.Jenkinsfile',
+            'backend/cimbt-ctip-ctipapi/pipeline-rollback-uat': 'backend/cimbt-ctip-ctipapi/pipeline-rollback-uat.Jenkinsfile',
+            'backend/cimbt-ctip-ctipapi/pipeline-security-scan': 'backend/cimbt-ctip-ctipapi/pipeline-security-scan.Jenkinsfile',
+            'backend/cimbt-ctip-ctipwebapp/pipeline-build-dev': 'backend/cimbt-ctip-ctipwebapp/pipeline-build-dev.Jenkinsfile',
+            'backend/cimbt-ctip-ctipwebapp/pipeline-deploy-dev': 'backend/cimbt-ctip-ctipwebapp/pipeline-deploy-dev.Jenkinsfile',
+            'backend/cimbt-ctip-ctipwebapp/pipeline-deploy-sit': 'backend/cimbt-ctip-ctipwebapp/pipeline-deploy-sit.Jenkinsfile',
+            'backend/cimbt-ctip-ctipwebapp/pipeline-deploy-uat': 'backend/cimbt-ctip-ctipwebapp/pipeline-deploy-uat.Jenkinsfile',
+            'backend/cimbt-ctip-ctipwebapp/pipeline-rollback-uat': 'backend/cimbt-ctip-ctipwebapp/pipeline-rollback-uat.Jenkinsfile',
+            'backend/cimbt-ctip-ctipwebapp/pipeline-security-scan': 'backend/cimbt-ctip-ctipwebapp/pipeline-security-scan.Jenkinsfile',
+            'backend/cimbt-ctip-dbapi/pipeline-build-dev': 'backend/cimbt-ctip-dbapi/pipeline-build-dev.Jenkinsfile',
+            'backend/cimbt-ctip-dbapi/pipeline-deploy-dev': 'backend/cimbt-ctip-dbapi/pipeline-deploy-dev.Jenkinsfile',
+            'backend/cimbt-ctip-dbapi/pipeline-deploy-sit': 'backend/cimbt-ctip-dbapi/pipeline-deploy-sit.Jenkinsfile',
+            'backend/cimbt-ctip-dbapi/pipeline-deploy-uat': 'backend/cimbt-ctip-dbapi/pipeline-deploy-uat.Jenkinsfile',
+            'backend/cimbt-ctip-dbapi/pipeline-rollback-uat': 'backend/cimbt-ctip-dbapi/pipeline-rollback-uat.Jenkinsfile',
+            'backend/cimbt-ctip-dbapi/pipeline-security-scan': 'backend/cimbt-ctip-dbapi/pipeline-security-scan.Jenkinsfile',
+            'backend/cimbt-ctip-dbmqapi/pipeline-build-dev': 'backend/cimbt-ctip-dbmqapi/pipeline-build-dev.Jenkinsfile',
+            'backend/cimbt-ctip-dbmqapi/pipeline-deploy-dev': 'backend/cimbt-ctip-dbmqapi/pipeline-deploy-dev.Jenkinsfile',
+            'backend/cimbt-ctip-dbmqapi/pipeline-deploy-sit': 'backend/cimbt-ctip-dbmqapi/pipeline-deploy-sit.Jenkinsfile',
+            'backend/cimbt-ctip-dbmqapi/pipeline-deploy-uat': 'backend/cimbt-ctip-dbmqapi/pipeline-deploy-uat.Jenkinsfile',
+            'backend/cimbt-ctip-dbmqapi/pipeline-rollback-uat': 'backend/cimbt-ctip-dbmqapi/pipeline-rollback-uat.Jenkinsfile',
+            'backend/cimbt-ctip-dbmqapi/pipeline-security-scan': 'backend/cimbt-ctip-dbmqapi/pipeline-security-scan.Jenkinsfile',
+            'backend/cimbt-ctip-facerecognitionapi/pipeline-build-dev': 'backend/cimbt-ctip-facerecognitionapi/pipeline-build-dev.Jenkinsfile',
+            'backend/cimbt-ctip-facerecognitionapi/pipeline-deploy-dev': 'backend/cimbt-ctip-facerecognitionapi/pipeline-deploy-dev.Jenkinsfile',
+            'backend/cimbt-ctip-facerecognitionapi/pipeline-deploy-sit': 'backend/cimbt-ctip-facerecognitionapi/pipeline-deploy-sit.Jenkinsfile',
+            'backend/cimbt-ctip-facerecognitionapi/pipeline-deploy-uat': 'backend/cimbt-ctip-facerecognitionapi/pipeline-deploy-uat.Jenkinsfile',
+            'backend/cimbt-ctip-facerecognitionapi/pipeline-rollback-uat': 'backend/cimbt-ctip-facerecognitionapi/pipeline-rollback-uat.Jenkinsfile',
+            'backend/cimbt-ctip-facerecognitionapi/pipeline-security-scan': 'backend/cimbt-ctip-facerecognitionapi/pipeline-security-scan.Jenkinsfile',
+            'backend/cimbt-ctip-hsmapi/pipeline-build-dev': 'backend/cimbt-ctip-hsmapi/pipeline-build-dev.Jenkinsfile',
+            'backend/cimbt-ctip-hsmapi/pipeline-deploy-dev': 'backend/cimbt-ctip-hsmapi/pipeline-deploy-dev.Jenkinsfile',
+            'backend/cimbt-ctip-hsmapi/pipeline-deploy-sit': 'backend/cimbt-ctip-hsmapi/pipeline-deploy-sit.Jenkinsfile',
+            'backend/cimbt-ctip-hsmapi/pipeline-deploy-uat': 'backend/cimbt-ctip-hsmapi/pipeline-deploy-uat.Jenkinsfile',
+            'backend/cimbt-ctip-hsmapi/pipeline-rollback-uat': 'backend/cimbt-ctip-hsmapi/pipeline-rollback-uat.Jenkinsfile',
+            'backend/cimbt-ctip-hsmapi/pipeline-security-scan': 'backend/cimbt-ctip-hsmapi/pipeline-security-scan.Jenkinsfile',
+            'backend/cimbt-ctip-ialapi/pipeline-build-dev': 'backend/cimbt-ctip-ialapi/pipeline-build-dev.Jenkinsfile',
+            'backend/cimbt-ctip-ialapi/pipeline-deploy-dev': 'backend/cimbt-ctip-ialapi/pipeline-deploy-dev.Jenkinsfile',
+            'backend/cimbt-ctip-ialapi/pipeline-deploy-sit': 'backend/cimbt-ctip-ialapi/pipeline-deploy-sit.Jenkinsfile',
+            'backend/cimbt-ctip-ialapi/pipeline-deploy-uat': 'backend/cimbt-ctip-ialapi/pipeline-deploy-uat.Jenkinsfile',
+            'backend/cimbt-ctip-ialapi/pipeline-rollback-uat': 'backend/cimbt-ctip-ialapi/pipeline-rollback-uat.Jenkinsfile',
+            'backend/cimbt-ctip-ialapi/pipeline-security-scan': 'backend/cimbt-ctip-ialapi/pipeline-security-scan.Jenkinsfile',
+            'backend/cimbt-ctip-oidapi/pipeline-build-dev': 'backend/cimbt-ctip-oidapi/pipeline-build-dev.Jenkinsfile',
+            'backend/cimbt-ctip-oidapi/pipeline-deploy-dev': 'backend/cimbt-ctip-oidapi/pipeline-deploy-dev.Jenkinsfile',
+            'backend/cimbt-ctip-oidapi/pipeline-deploy-sit': 'backend/cimbt-ctip-oidapi/pipeline-deploy-sit.Jenkinsfile',
+            'backend/cimbt-ctip-oidapi/pipeline-deploy-uat': 'backend/cimbt-ctip-oidapi/pipeline-deploy-uat.Jenkinsfile',
+            'backend/cimbt-ctip-oidapi/pipeline-rollback-uat': 'backend/cimbt-ctip-oidapi/pipeline-rollback-uat.Jenkinsfile',
+            'backend/cimbt-ctip-oidapi/pipeline-security-scan': 'backend/cimbt-ctip-oidapi/pipeline-security-scan.Jenkinsfile',
+            'backend/cimbt-ctip-oiddbapi/pipeline-build-dev': 'backend/cimbt-ctip-oiddbapi/pipeline-build-dev.Jenkinsfile',
+            'backend/cimbt-ctip-oiddbapi/pipeline-deploy-dev': 'backend/cimbt-ctip-oiddbapi/pipeline-deploy-dev.Jenkinsfile',
+            'backend/cimbt-ctip-oiddbapi/pipeline-deploy-sit': 'backend/cimbt-ctip-oiddbapi/pipeline-deploy-sit.Jenkinsfile',
+            'backend/cimbt-ctip-oiddbapi/pipeline-deploy-uat': 'backend/cimbt-ctip-oiddbapi/pipeline-deploy-uat.Jenkinsfile',
+            'backend/cimbt-ctip-oiddbapi/pipeline-rollback-uat': 'backend/cimbt-ctip-oiddbapi/pipeline-rollback-uat.Jenkinsfile',
+            'backend/cimbt-ctip-oiddbapi/pipeline-security-scan': 'backend/cimbt-ctip-oiddbapi/pipeline-security-scan.Jenkinsfile',
+            'backend/cimbt-ctip-oidxml/pipeline-build-dev': 'backend/cimbt-ctip-oidxml/pipeline-build-dev.Jenkinsfile',
+            'backend/cimbt-ctip-oidxml/pipeline-deploy-dev': 'backend/cimbt-ctip-oidxml/pipeline-deploy-dev.Jenkinsfile',
+            'backend/cimbt-ctip-oidxml/pipeline-deploy-sit': 'backend/cimbt-ctip-oidxml/pipeline-deploy-sit.Jenkinsfile',
+            'backend/cimbt-ctip-oidxml/pipeline-deploy-uat': 'backend/cimbt-ctip-oidxml/pipeline-deploy-uat.Jenkinsfile',
+            'backend/cimbt-ctip-oidxml/pipeline-rollback-uat': 'backend/cimbt-ctip-oidxml/pipeline-rollback-uat.Jenkinsfile',
+            'backend/cimbt-ctip-oidxml/pipeline-security-scan': 'backend/cimbt-ctip-oidxml/pipeline-security-scan.Jenkinsfile',
+            'backend/cimbt-ctip-settlementapi/pipeline-build-dev': 'backend/cimbt-ctip-settlementapi/pipeline-build-dev.Jenkinsfile',
+            'backend/cimbt-ctip-settlementapi/pipeline-release-dev': 'backend/cimbt-ctip-settlementapi/pipeline-release-dev.Jenkinsfile',
+            'backend/cimbt-ctip-settlementapi/pipeline-release-sit': 'backend/cimbt-ctip-settlementapi/pipeline-release-sit.Jenkinsfile',
+            'backend/cimbt-ctip-settlementapi/pipeline-release-uat': 'backend/cimbt-ctip-settlementapi/pipeline-release-uat.Jenkinsfile',
+            'backend/cimbt-ctip-settlementapi/pipeline-rollback-uat': 'backend/cimbt-ctip-settlementapi/pipeline-rollback-uat.Jenkinsfile',
+            'backend/cimbt-ctip-settlementapi/pipeline-security-scan': 'backend/cimbt-ctip-settlementapi/pipeline-security-scan.Jenkinsfile',
+            'frontend/cimbt-ctip-frontapi/pipeline-build-dev': 'frontend/cimbt-ctip-frontapi/pipeline-build-dev.Jenkinsfile',
+            'frontend/cimbt-ctip-frontapi/pipeline-deploy-dev': 'frontend/cimbt-ctip-frontapi/pipeline-deploy-dev.Jenkinsfile',
+            'frontend/cimbt-ctip-frontapi/pipeline-deploy-sit': 'frontend/cimbt-ctip-frontapi/pipeline-deploy-sit.Jenkinsfile',
+            'frontend/cimbt-ctip-frontapi/pipeline-deploy-uat': 'frontend/cimbt-ctip-frontapi/pipeline-deploy-uat.Jenkinsfile',
+            'frontend/cimbt-ctip-frontapi/pipeline-security-scan': 'frontend/cimbt-ctip-frontapi/pipeline-security-scan.Jenkinsfile',
+            'frontend/cimbt-ctip-ndidapi/pipeline-build-dev': 'frontend/cimbt-ctip-ndidapi/pipeline-build-dev.Jenkinsfile',
+            'frontend/cimbt-ctip-ndidapi/pipeline-deploy-dev': 'frontend/cimbt-ctip-ndidapi/pipeline-deploy-dev.Jenkinsfile',
+            'frontend/cimbt-ctip-ndidapi/pipeline-deploy-sit': 'frontend/cimbt-ctip-ndidapi/pipeline-deploy-sit.Jenkinsfile',
+            'frontend/cimbt-ctip-ndidapi/pipeline-deploy-uat': 'frontend/cimbt-ctip-ndidapi/pipeline-deploy-uat.Jenkinsfile',
+            'frontend/cimbt-ctip-ndidapi/pipeline-security-scan': 'frontend/cimbt-ctip-ndidapi/pipeline-security-scan.Jenkinsfile',
+            'frontend/cimbt-ctip-ndidapi/unused_pipeline-deploy-temp-dev': 'frontend/cimbt-ctip-ndidapi/unused_pipeline-deploy-temp-dev.Jenkinsfile',
+            'frontend/cimbt-ctip-ndidexample/pipeline-build-dev': 'frontend/cimbt-ctip-ndidexample/pipeline-build-dev.Jenkinsfile',
+            'frontend/cimbt-ctip-ndidexample/pipeline-deploy-dev': 'frontend/cimbt-ctip-ndidexample/pipeline-deploy-dev.Jenkinsfile',
+            'frontend/cimbt-ctip-ndidexample/pipeline-deploy-ncb-dev': 'frontend/cimbt-ctip-ndidexample/pipeline-deploy-ncb-dev.Jenkinsfile',
+            'frontend/cimbt-ctip-ndidexample/pipeline-security-scan': 'frontend/cimbt-ctip-ndidexample/pipeline-security-scan.Jenkinsfile',
+            'frontend/cimbt-ctip-ndidmigration-tools/pipeline-build-dev': 'frontend/cimbt-ctip-ndidmigration-tools/pipeline-build-dev.Jenkinsfile',
+            'frontend/cimbt-ctip-ndidmq/pipeline-build-dev': 'frontend/cimbt-ctip-ndidmq/pipeline-build-dev.Jenkinsfile',
+            'frontend/cimbt-ctip-ndidmq/pipeline-deploy-dev': 'frontend/cimbt-ctip-ndidmq/pipeline-deploy-dev.Jenkinsfile',
+            'frontend/cimbt-ctip-ndidmq/pipeline-deploy-sit': 'frontend/cimbt-ctip-ndidmq/pipeline-deploy-sit.Jenkinsfile',
+            'frontend/cimbt-ctip-ndidmq/pipeline-deploy-uat': 'frontend/cimbt-ctip-ndidmq/pipeline-deploy-uat.Jenkinsfile',
+            'frontend/cimbt-ctip-ndidmq/pipeline-security-scan': 'frontend/cimbt-ctip-ndidmq/pipeline-security-scan.Jenkinsfile',
+            'frontend/cimbt-ctip-ndidtelemetry/pipeline-build-dev': 'frontend/cimbt-ctip-ndidtelemetry/pipeline-build-dev.Jenkinsfile',
+            'frontend/cimbt-ctip-ndidtelemetry/pipeline-deploy-dev': 'frontend/cimbt-ctip-ndidtelemetry/pipeline-deploy-dev.Jenkinsfile',
+            'frontend/cimbt-ctip-ndidtelemetry/pipeline-deploy-sit': 'frontend/cimbt-ctip-ndidtelemetry/pipeline-deploy-sit.Jenkinsfile',
+            'frontend/cimbt-ctip-ndidtelemetry/pipeline-deploy-uat': 'frontend/cimbt-ctip-ndidtelemetry/pipeline-deploy-uat.Jenkinsfile',
+            'frontend/cimbt-ctip-ndidtelemetry/pipeline-redis-dev': 'frontend/cimbt-ctip-ndidtelemetry/pipeline-redis-dev.Jenkinsfile',
+            'frontend/cimbt-ctip-ndidtelemetry/pipeline-redis-sit': 'frontend/cimbt-ctip-ndidtelemetry/pipeline-redis-sit.Jenkinsfile',
+            'frontend/cimbt-ctip-ndidtelemetry/pipeline-redis-uat': 'frontend/cimbt-ctip-ndidtelemetry/pipeline-redis-uat.Jenkinsfile',
+            'frontend/cimbt-ctip-ndidtelemetry/pipeline-security-scan': 'frontend/cimbt-ctip-ndidtelemetry/pipeline-security-scan.Jenkinsfile',
+            'frontend/cimbt-ctip-ndidtendermint/pipeline-build-dev': 'frontend/cimbt-ctip-ndidtendermint/pipeline-build-dev.Jenkinsfile',
+            'frontend/cimbt-ctip-ndidtendermint/pipeline-deploy-dev': 'frontend/cimbt-ctip-ndidtendermint/pipeline-deploy-dev.Jenkinsfile',
+            'frontend/cimbt-ctip-ndidtendermint/pipeline-deploy-sit': 'frontend/cimbt-ctip-ndidtendermint/pipeline-deploy-sit.Jenkinsfile',
+            'frontend/cimbt-ctip-ndidtendermint/pipeline-deploy-temp-dev': 'frontend/cimbt-ctip-ndidtendermint/pipeline-deploy-temp-dev.Jenkinsfile',
+            'frontend/cimbt-ctip-ndidtendermint/pipeline-deploy-temp-sit': 'frontend/cimbt-ctip-ndidtendermint/pipeline-deploy-temp-sit.Jenkinsfile',
+            'frontend/cimbt-ctip-ndidtendermint/pipeline-deploy-uat': 'frontend/cimbt-ctip-ndidtendermint/pipeline-deploy-uat.Jenkinsfile',
+            'frontend/cimbt-ctip-ndidtendermint/pipeline-security-scan': 'frontend/cimbt-ctip-ndidtendermint/pipeline-security-scan.Jenkinsfile',
+            'frontend/cimbt-ctip-ndidtendermint/unused_pipeline-deploy-sit': 'frontend/cimbt-ctip-ndidtendermint/unused_pipeline-deploy-sit.Jenkinsfile',
+            'function/cimbt-ctip-apigwauth/pipeline-build-dev': 'function/cimbt-ctip-apigwauth/pipeline-build-dev.Jenkinsfile',
+            'function/cimbt-ctip-apigwauth/pipeline-deploy-dev': 'function/cimbt-ctip-apigwauth/pipeline-deploy-dev.Jenkinsfile',
+            'function/cimbt-ctip-apigwauth/pipeline-deploy-sit': 'function/cimbt-ctip-apigwauth/pipeline-deploy-sit.Jenkinsfile',
+            'function/cimbt-ctip-apigwauth/pipeline-deploy-uat': 'function/cimbt-ctip-apigwauth/pipeline-deploy-uat.Jenkinsfile',
+            'function/cimbt-ctip-apigwauth/pipeline-security-scan': 'function/cimbt-ctip-apigwauth/pipeline-security-scan.Jenkinsfile',
+            'hsm-proxy/cimbt-ctip-hsmproxy/pipeline-build-uat': 'hsm-proxy/cimbt-ctip-hsmproxy/pipeline-build-uat.Jenkinsfile',
+            'hsm-proxy/cimbt-ctip-hsmproxy/pipeline-deploy-tag-uat': 'hsm-proxy/cimbt-ctip-hsmproxy/pipeline-deploy-tag-uat.Jenkinsfile',
+            'hsm-proxy/cimbt-ctip-hsmproxy/pipeline-security-scan': 'hsm-proxy/cimbt-ctip-hsmproxy/pipeline-security-scan.Jenkinsfile',
+            'hsm-proxy/cimbt-ctip-hsmproxy/unused_pipeline-deploy-uat': 'hsm-proxy/cimbt-ctip-hsmproxy/unused_pipeline-deploy-uat.Jenkinsfile',
+            'hsm-proxy/cimbt-datadog-agent/pipeline-deploy-uat': 'hsm-proxy/cimbt-datadog-agent/pipeline-deploy-uat.Jenkinsfile',
+            'utility-pipeline/pipeline-change-active-tendermint-dev': 'utility-pipeline/pipeline-change-active-tendermint-dev.Jenkinsfile',
+            'utility-pipeline/pipeline-crane-copy': 'utility-pipeline/pipeline-crane-copy.Jenkinsfile',
+            'utility-pipeline/pipeline-get-tag': 'utility-pipeline/pipeline-get-tag.Jenkinsfile',
+            'utility-pipeline/pipeline-service-control-uat': 'utility-pipeline/pipeline-service-control-uat.Jenkinsfile',
+            'utility-pipeline/pipeline-view-current-active-tendermint-dev': 'utility-pipeline/pipeline-view-current-active-tendermint-dev.Jenkinsfile',
+            ]
+
+            def folders = jobsMap.keySet().collect { j ->
+              def parts = j.tokenize('/')
+              parts.size()>1 ? parts[0..-2].join('/') : parts[0]
+            }.unique().sort()
+
+            folders.each { f -> folder(f) }
+
+            def repoUrl = 'https://git.shared.cloud.cimbthai.com/ctip/cimbt-cicd-ctip.git'
+            def credentialsId = 'gitlab'
+            def branchName = 'main'
+
+            jobsMap.each { jobName, scriptPath ->
+              pipelineJob(jobName) {
+                definition { cpsScm { scm { git { remote { url(repoUrl); credentials(credentialsId) } branch(branchName) } } scriptPath(scriptPath) lightweight(true) } }
+                disabled(false)
               }
-          }
-
-          // === 2. Constants ===
-          def repoUrl      = 'https://github.com/padstrike/example-pipeline.git'
-          def projects     = ['project-a', 'project-b']
-          def environments = ['dev', 'sit', 'uat']
-
-          // === 3. Per-project subfolders + pipeline jobs ===
-          projects.each { proj ->
-              // build “PAD/DevOps/project-a” etc.
-              def projectFolder = 'PAD/DevOps/' + proj
-
-              folder(projectFolder) {
-                  description('Project folder for ' + proj + ' under DevOps')
-              }
-
-              environments.each { env ->
-                  // jobName = PAD/DevOps/project-a/project-a-dev
-                  def jobName         = projectFolder + '/' + proj + '-' + env
-                  def jenkinsfilePath = proj + '/' + env + '.Jenkinsfile'
-
-                  try {
-                      pipelineJob(jobName) {
-                          description('Pipeline for ' + proj + ' [' + env + '] under DevOps')
-                          keepDependencies(false)
-
-                          definition {
-                              cpsScm {
-                                  scm {
-                                      git {
-                                          remote {
-                                              url(repoUrl)
-                                              credentials('gitlab')
-                                          }
-                                          branch('main')
-                                      }
-                                  }
-                                  scriptPath(jenkinsfilePath)
-                                  lightweight(true)
-                              }
-                          }
-
-                          disabled(false)
-                      }
-                  } catch (Exception ex) {
-                      // single-quoted + concatenation → no ${…} warnings
-                      println '❌ Failed to create job "' + jobName + '": ' + ex.toString()
-                  }
-              }
-          }
+            }
