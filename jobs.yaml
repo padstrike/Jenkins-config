@@ -1,36 +1,33 @@
 jobs:
     - script: |
     
-        // Root folders
-        ['PAD', 'PAD/DevOps'].each { path ->
-            folder(path) {
-                description("Folder: ${path}")
+        // === 1. สร้างโฟลเดอร์หลัก ===
+        ['PAD', 'PAD/DevOps'].each { folderName ->
+            folder(folderName) {
+                description("Folder: ${folderName}")
             }
         }
 
-        // Constant repo URL for all jobs
+        // === 2. config constants ===
         def repoUrl = 'https://github.com/padstrike/example-pipeline.git'
-
-        // List of projects only
         def projects = ['project-a', 'project-b']
         def environments = ['dev', 'sit', 'uat']
 
-        // Generate folders and jobs
+        // === 3. Generate jobs ===
         projects.each { projectName ->
-            def basePath = "PAD/${projectName}"
+            def projectFolder = "PAD/${projectName}"
 
-            folder(basePath) {
+            folder(projectFolder) {
                 description("Project folder for ${projectName}")
             }
 
             environments.each { env ->
-                def jobName = "${basePath}/${projectName}-${env}"
-                def scriptPath = "${projectName}/${env}.Jenkinsfile"
+                def jobName = "${projectFolder}/${projectName}-${env}"
+                def jenkinsfilePath = "${projectName}/${env}.Jenkinsfile"
 
                 try {
                     pipelineJob(jobName) {
                         description("Pipeline for ${projectName} [${env}]")
-
                         keepDependencies(false)
 
                         definition {
@@ -44,7 +41,7 @@ jobs:
                                         branch('main')
                                     }
                                 }
-                                scriptPath(scriptPath)
+                                scriptPath(jenkinsfilePath)
                                 lightweight(true)
                             }
                         }
@@ -52,7 +49,9 @@ jobs:
                         disabled(false)
                     }
                 } catch (Exception e) {
-                    println "❌ Failed to create job '${jobName}': ${e.message}"
+                    // หลีกเลี่ยง string interpolation เพื่อลด error JCasC
+                    println '❌ Failed to create job: ' + e.toString()
                 }
             }
         }
+
