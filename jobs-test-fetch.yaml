@@ -1,44 +1,78 @@
 jobs:
   - script: |
-      // Root folder
-      folder('PAD') {
-          description('Root folder for PAD projects')
-      }
+        // 1) Create the two top‐level folders
+        ['backend','frontend'].each { top ->
+            folder(top) {
+                description('Top‐level folder: ' + top)
+            }
+        }
 
-      def jobDefinitions = ['project-a', 'project-b']
-      def environments = ['dev', 'sit', 'uat']
+        // 2) Define your lists of services
+        def backendServices = [
+            'cimbt-ctip-bioapi',
+            'cimbt-ctip-ctipapi',
+            'cimbt-ctip-ctipwebapp',
+            'cimbt-ctip-dbapi',
+            'cimbt-ctip-dbmqapi',
+            'cimbt-ctip-facerecognitionapi',
+            'cimbt-ctip-hsmapi',
+            'cimbt-ctip-ialapi',
+            'cimbt-ctip-settlementapi'
+        ]
+        def frontendServices = [
+            'cimbt-ctip-oidapi',
+            'cimbt-ctip-oiddbapi',
+            'cimbt-ctip-oidxml',
+        ]
 
-      jobDefinitions.each { projectName ->
+        // 3) Create each service folder under its parent
+        backendServices.each { svc ->
+            def svcFolder = 'backend/' + svc
+            folder(svcFolder) {
+                description('Backend service: ' + svc)
+            }
+        }
 
-          folder("PAD/${projectName}") {
-              description("Folder for ${projectName}")
-          }
+        frontendServices.each { svc ->
+            def svcFolder = 'frontend/' + svc
+            folder(svcFolder) {
+                description('Frontend service: ' + svc)
+            }
+        }
 
-          environments.each { env ->
-              def jobName = "PAD/${projectName}/${projectName}-${env}"
-              def scriptPathValue = "${projectName}/${env}.Jenkinsfile"
+        // 4) (Optional) Create pipelineJobs inside each service
+        def repoUrl      = 'https://github.com/padstrike/example-pipeline.git'
+        def environments = ['dev','sit','uat']
 
-              pipelineJob(jobName) {
-                  description("Pipeline for ${projectName} [${env}]")
-                  keepDependencies(false)
+        backendServices.each { svc ->
+            def base = 'backend/' + svc
+            environments.each { env ->
+                def jobName = base + '/' + svc + '-' + env
+                def jenkinsfilePath = svc + '/' + env + '.Jenkinsfile'
 
-                  definition {
-                      cpsScm {
-                          scm {
-                              git {
-                                  remote {
-                                      url('https://github.com/padstrike/example-pipeline.git')
-                                      credentials('gitlab')
-                                  }
-                                  branch('main')
-                              }
-                          }
-                          scriptPath(scriptPathValue)
-                          lightweight(true)
-                      }
-                  }
-
-                  disabled(false)
-              }
-          }
-      }
+                try {
+                    pipelineJob(jobName) {
+                        description('Pipeline for ' + svc + ' [' + env + ']')
+                        keepDependencies(false)
+                        definition {
+                            cpsScm {
+                                scm {
+                                    git {
+                                        remote {
+                                            url(repoUrl)
+                                            credentials('gitlab')
+                                        }
+                                        branch('main')
+                                    }
+                                }
+                                scriptPath(jenkinsfilePath)
+                                lightweight(true)
+                            }
+                        }
+                        disabled(false)
+                    }
+                } catch (Exception ex) {
+                    println '❌ Failed to create job "' + jobName + '": ' + ex.toString()
+                }
+            }
+        }
