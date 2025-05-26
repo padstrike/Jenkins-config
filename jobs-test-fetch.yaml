@@ -1,19 +1,37 @@
-# jobs-test-fetch.yaml
 jobs:
-  - script: >
-      pipelineJob('job-dsl-plugin') {
-        definition {
-          cpsScm {
-            scm {
-              git {
-                remote {
-                  url('https://github.com/padstrike/Jenkins-config.git')
-                }
-                branch('*/main')
+  - script: |
+      import java.io.File
+
+      def environments = ['dev', 'sit', 'uat']
+
+      def workspaceDir = new File('.')
+      def projects = workspaceDir.listFiles()
+          .findAll { it.isDirectory() && it.name.startsWith('project-') }
+
+      projects.each { proj ->
+          def projectName = proj.name
+          environments.each { env ->
+              def jobName = 'projectName + '-' + env
+              pipelineJob(jobName) {
+                  description('Pipeline for ' + projectName + ' [' + env + ']')
+                  keepDependencies(false)
+                  definition {
+                      cpsScm {
+                          scm {
+                              git {
+                                  remote {
+                                      url 'https://github.com/padstrike/example-pipeline.git'
+                                      credentials('gitlab')
+                                  }
+                                  branch 'main'
+                              }
+                          }
+                          scriptPath(projectName + '/' + env + '.Jenkinsfile')
+                          lightweight true
+                      }
+                  }
+
+                  disabled(false)
               }
-            }
-            scriptPath 'jobs-dsl/POC_pipeline.groovy'
-            lightweight false
           }
-        }
       }
