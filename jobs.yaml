@@ -1,35 +1,38 @@
 
 jobs:
   - script: |
+      import java.io.File
+
       def environments = ['dev', 'sit', 'uat']
-      def projects = findFiles(glob: 'project-*').findAll { it.directory }
+
+      def workspaceDir = new File('.')
+      def projects = workspaceDir.listFiles()
+          .findAll { it.isDirectory() && it.name.startsWith('project-') }
 
       projects.each { proj ->
-        def projectName = proj.name
-
-        environments.each { env ->
-          def jobName = "PAD/DevOps/${projectName}-${env}"
-
-          pipelineJob(jobName) {
-            description("Pipeline for ${projectName} [${env}]")
-            keepDependencies(false)
-            definition {
-              cpsScm {
-                scm {
-                  git {
-                    remote {
-                      url 'https://github.com/padstrike/example-pipeline.git'
-                      credentials('gitlab')
-                    }
-                    branch 'main'
+          def projectName = proj.name
+          environments.each { env ->
+              def jobName = "PAD/DevOps/${projectName}-${env}"
+              pipelineJob(jobName) {
+                  description("Pipeline for ${projectName} [${env}]")
+                  keepDependencies(false)
+                  definition {
+                      cpsScm {
+                          scm {
+                              git {
+                                  remote {
+                                      url 'https://github.com/padstrike/example-pipeline.git'
+                                      credentials('gitlab')
+                                  }
+                                  branch 'main'
+                              }
+                          }
+                          scriptPath "${projectName}/${env}.Jenkinsfile"
+                          lightweight true
+                      }
                   }
-                }
-                scriptPath proj.path + "/${env}.Jenkinsfile"
-                lightweight true
-              }
-            }
 
-            disabled false
+                  disabled false
+              }
           }
-        }
       }
