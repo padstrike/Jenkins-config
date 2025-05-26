@@ -12,7 +12,7 @@ jobs:
         // 3. Loop through projects and environments
         jobDefinitions.each { projectName, cfg ->
           environments.each { env ->
-            def jobName = 'PAD/DevOps/' + projectName + '-' + env
+            def jobName = 'PAD/' + projectName + '-' + env
             pipelineJob(jobName) {
               description('Pipeline for ' + projectName + ' [' + env + ']')
               keepDependencies(false)
