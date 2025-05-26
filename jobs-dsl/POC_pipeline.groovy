@@ -27,7 +27,7 @@ projects.each { proj ->
             git {
               remote {
                 url(proj.gitUrl)
-                credentialsId(credId)
+                credentials(credId)
               }
               branches("*/${branch}")
             }
