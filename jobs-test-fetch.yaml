@@ -7,12 +7,13 @@ jobs:
             scm {
               git {
                 remote {
-                  url('https://github.com/jenkinsci/job-dsl-plugin.git')
+                  url('https://github.com/padstrike/Jenkins-config.git')
                 }
-                branch('*/master')
+                branch('*/main')
               }
             }
-            lightweight()
+            scriptPath 'jobs-dsl/POC_pipeline.groovy'
+            lightweight false
           }
         }
       }
