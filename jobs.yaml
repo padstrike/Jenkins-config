@@ -177,6 +177,20 @@ jobs:
             pipelineJob(job.jobFullPath) {
                 displayName(job.displayName)
                 description('Auto-generated pipeline for ' + job.scriptPath)
-                definition { cpsScm { scm { git { remote { url(gitRepoUrl); if (gitCredentialsId) credentials(gitCredentialsId) }; branch(gitBranch) } } scriptPath(job.scriptPath); lightweight(true) } }
+                definition {
+                    cpsScm {
+                        scm {
+                            git {
+                                remote {
+                                    url(gitRepoUrl)
+                                    if (gitCredentialsId) { credentials(gitCredentialsId) }
+                                }
+                                branch(gitBranch)
+                            }
+                        }
+                        scriptPath(job.scriptPath)
+                        lightweight(true)
+                    }
+                }
             }
         }
