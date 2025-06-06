@@ -4,10 +4,9 @@ jenkins:
       allowsSignup: false
       enableCaptcha: false
       users:
-        - id: "admin"
+        - id: "admin3"
           name: "IT CCoE"
           password: "admin123"
-      users:
         - id: "admin2"
           name: "IT CCoE"
           password: "admin123"
@@ -17,6 +16,7 @@ jenkins:
         global:
           - entries:
               - user: "admin"
+              - user: "admin3"
             name: "CCOE"
             pattern: ".*"
             permissions:
