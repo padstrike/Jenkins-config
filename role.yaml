@@ -4,26 +4,44 @@ jenkins:
       allowsSignup: false
       enableCaptcha: false
       users:
-        - id: "admin3"
-          name: "IT CCoE"
+        - id: "admin"
+          name: "Global Admin"
           password: "admin123"
         - id: "admin2"
-          name: "IT CCoE"
+          name: "Digital Team"
           password: "admin123"
+        - id: "admin3"
+          name: "CCoE Member"
+          password: "admin123"
+        - id: "viewer"
+          name: "Read Only User"
+          password: "viewer123"
+
   authorizationStrategy:
     roleBased:
       roles:
         global:
-          - entries:
-              - user: "admin"
+          - name: "CCOE"
+            pattern: ".*"
+            permissions:
+              - "Overall/Administer"
+            entries:
               - user: "admin3"
-            name: "CCOE"
+          - name: "DIGITAL"
             pattern: ".*"
             permissions:
               - "Overall/Administer"
-          - entries:
+            entries:
               - user: "admin2"
-            name: "DIGITAL"
+          - name: "ADMINS"
             pattern: ".*"
             permissions:
               - "Overall/Administer"
+            entries:
+              - user: "admin"
+          - name: "READ_ONLY"
+            pattern: ".*"
+            permissions:
+              - "Overall/Read"
+            entries:
+              - user: "viewer"
