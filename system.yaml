@@ -1,15 +1,18 @@
 jenkins:
-  systemMessage: "Configured by JCasC - Do not change manually."
-  numExecutors: 2
-  mode: NORMAL
-  labelString: "built-by-jcasc"
-  scmCheckoutRetryCount: 2
-  authorizationStrategy:
-    loggedInUsersCanDoAnything:
-      allowAnonymousRead: false
   securityRealm:
     local:
       allowsSignup: false
+      enableCaptcha: false
       users:
         - id: "admin"
+          name: "Global Admin"
           password: "admin123"
+        - id: "admin2"
+          name: "Digital Team"
+          password: "admin123"
+        - id: "admin3"
+          name: "CCoE Member"
+          password: "admin123"
+        - id: "viewer"
+          name: "Read Only User"
+          password: "viewer123"
