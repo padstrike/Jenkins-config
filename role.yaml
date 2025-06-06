@@ -9,10 +9,10 @@ jenkins:
           pattern: ".*"
           permissions:
           - "Overall/Administer"
-  securityRealm:
-    local:
-      allowsSignup: false
-      enableCaptcha: false
-      users:
-      - id: "admin"
-        name: "IT CCoE"
+  # securityRealm:
+  #   local:
+  #     allowsSignup: false
+  #     enableCaptcha: false
+  #     users:
+  #     - id: "admin"
+  #       name: "IT CCoE"
