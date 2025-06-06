@@ -17,31 +17,31 @@ jenkins:
           name: "Read Only User"
           password: "viewer123"
 
-  authorizationStrategy:
-    roleBased:
-      roles:
-        global:
-          - name: "CCOE"
-            pattern: ".*"
-            permissions:
-              - "Overall/Administer"
-            entries:
-              - user: "admin3"
-          - name: "DIGITAL"
-            pattern: ".*"
-            permissions:
-              - "Overall/Administer"
-            entries:
-              - user: "admin2"
-          - name: "ADMINS"
-            pattern: ".*"
-            permissions:
-              - "Overall/Administer"
-            entries:
-              - user: "admin"
-          - name: "READ_ONLY"
-            pattern: ".*"
-            permissions:
-              - "Overall/Read"
-            entries:
-              - user: "viewer"
+  # authorizationStrategy:
+  #   roleBased:
+  #     roles:
+  #       global:
+  #         - name: "CCOE"
+  #           pattern: ".*"
+  #           permissions:
+  #             - "Overall/Administer"
+  #           entries:
+  #             - user: "admin3"
+  #         - name: "DIGITAL"
+  #           pattern: ".*"
+  #           permissions:
+  #             - "Overall/Administer"
+  #           entries:
+  #             - user: "admin2"
+  #         - name: "ADMINS"
+  #           pattern: ".*"
+  #           permissions:
+  #             - "Overall/Administer"
+  #           entries:
+  #             - user: "admin"
+  #         - name: "READ_ONLY"
+  #           pattern: ".*"
+  #           permissions:
+  #             - "Overall/Read"
+  #           entries:
+  #             - user: "viewer"
