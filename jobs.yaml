@@ -3,7 +3,7 @@ jobs:
         // Auto-generated Job DSL Script
         def gitRepoUrl = 'https://git.shared.cloud.cimbthai.com/ctip/cimbt-cicd-ctip.git'
         def gitBranch = 'main'
-        def gitCredentialsId = null
+        def gitCredentialsId = 'ctip-gitlab-keygen'
 
         folder('DevOps') { displayName('DevOps'); description('Root folder level') }
         folder('DevOps/CTIP') { displayName('CTIP'); description('Root folder level') }

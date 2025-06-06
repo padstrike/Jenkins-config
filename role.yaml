@@ -1,14 +1,14 @@
 jenkins:
-  # authorizationStrategy:
-  #   roleBased:
-  #     roles:
-  #       global:
-  #       - entries:
-  #         - user: "poramet1797@gmail.com"
-  #         name: "CCOE"
-  #         pattern: ".*"
-  #         permissions:
-  #         - "Overall/Administer"
+  authorizationStrategy:
+    roleBased:
+      roles:
+        global:
+        - entries:
+          - user: "poramet1797@gmail.com"
+          name: "CCOE"
+          pattern: ".*"
+          permissions:
+          - "Overall/Administer"
   securityRealm:
     local:
       allowsSignup: false
