@@ -7,13 +7,32 @@ jenkins:
         - id: "admin"
           name: "IT CCoE"
           password: "admin123"
-  # authorizationStrategy:
-  #   roleBased:
-  #     roles:
-  #       global:
-  #         - name: "CCOE"
-  #           pattern: ".*"
-  #           permissions:
-  #             - "Overall/Administer"
-  #           entries:
-  #             - user: "admin"
+      users:
+        - id: "admin2"
+          name: "IT CCoE"
+          password: "admin123"
+  authorizationStrategy:
+    roleBased:
+      roles:
+        global:
+          - entries:
+              - user: "admin"
+            name: "CCOE"
+            pattern: ".*"
+            permissions:
+              - "Overall/Administer"
+          - entries:
+              - user: "admin2"
+            name: "DIGITAL"
+            pattern: ".*"
+            permissions:
+              - "Job/Cancel"
+              - "Overall/Read"
+              - "Job/Move"
+              - "Job/Build"
+              - "Job/Delete"
+              - "Job/Create"
+              - "Job/Discover"
+              - "Job/Read"
+              - "Job/Configure"
+              - "Job/Workspace"
