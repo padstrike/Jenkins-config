@@ -16,20 +16,3 @@ jenkins:
       users:
       - id: "admin"
         name: "IT CCoE"
-        properties:
-        - "consoleUrlProvider"
-        - "myView"
-        - preferredProvider:
-            providerId: "default"
-        - theme:
-            theme: "noOp"
-        - "timezone"
-        - "experimentalFlags"
-        - mailer:
-            emailAddress: "poramet1797@gmail.com"
-        - "apiToken"
-        - samlCustomProperty:
-            attributes: |-
-              FAILED TO EXPORT
-              org.jenkinsci.plugins.saml.user.SamlCustomProperty#attributes: No configurator found for type class org.jenkinsci.plugins.saml.user.SamlCustomProperty$Attribute
-        - "loginDetailsProperty"
