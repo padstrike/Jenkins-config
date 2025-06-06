@@ -1,47 +1,47 @@
 jenkins:
-  securityRealm:
-    local:
-      allowsSignup: false
-      enableCaptcha: false
-      users:
-        - id: "admin"
-          name: "Global Admin"
-          password: "admin123"
-        - id: "admin2"
-          name: "Digital Team"
-          password: "admin123"
-        - id: "admin3"
-          name: "CCoE Member"
-          password: "admin123"
-        - id: "viewer"
-          name: "Read Only User"
-          password: "viewer123"
+  # securityRealm:
+  #   local:
+  #     allowsSignup: false
+  #     enableCaptcha: false
+  #     users:
+  #       - id: "admin"
+  #         name: "Global Admin"
+  #         password: "admin123"
+  #       - id: "admin2"
+  #         name: "Digital Team"
+  #         password: "admin123"
+  #       - id: "admin3"
+  #         name: "CCoE Member"
+  #         password: "admin123"
+  #       - id: "viewer"
+  #         name: "Read Only User"
+  #         password: "viewer123"
 
-  # authorizationStrategy:
-  #   roleBased:
-  #     roles:
-  #       global:
-  #         - name: "CCOE"
-  #           pattern: ".*"
-  #           permissions:
-  #             - "Overall/Administer"
-  #           entries:
-  #             - user: "admin3"
-  #         - name: "DIGITAL"
-  #           pattern: ".*"
-  #           permissions:
-  #             - "Overall/Administer"
-  #           entries:
-  #             - user: "admin2"
-  #         - name: "ADMINS"
-  #           pattern: ".*"
-  #           permissions:
-  #             - "Overall/Administer"
-  #           entries:
-  #             - user: "admin"
-  #         - name: "READ_ONLY"
-  #           pattern: ".*"
-  #           permissions:
-  #             - "Overall/Read"
-  #           entries:
-  #             - user: "viewer"
+  authorizationStrategy:
+    roleBased:
+      roles:
+        global:
+          - name: "CCOE"
+            pattern: ".*"
+            permissions:
+              - "Overall/Administer"
+            entries:
+              - user: "admin"
+          - name: "DIGITAL"
+            pattern: ".*"
+            permissions:
+              - "Overall/Administer"
+            entries:
+              - user: "admin2"
+          # - name: "ADMINS"
+          #   pattern: ".*"
+          #   permissions:
+          #     - "Overall/Administer"
+          #   entries:
+          #     - user: "admin"
+          # - name: "READ_ONLY"
+          #   pattern: ".*"
+          #   permissions:
+          #     - "Overall/Read"
+          #   entries:
+          #     - user: "viewer"
